@@ -19,6 +19,7 @@ h3 {
 }
 
 #app {
+	transition: all 0.25s;
 	width: 430px;
 	margin: 30px auto 0;
 	padding: 10px 20px 20px;
@@ -26,6 +27,7 @@ h3 {
 	background: rgb(99, 195, 228);
 	border: 1px solid rgb(66, 117, 134);
 	box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+	display: none;
 }
 
 input[type="text"] {
