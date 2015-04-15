@@ -144,3 +144,7 @@ li label.done:before {
 .destroy:hover {
 	color: #ffffff;
 }
+
+.obj-id{
+	display: none;
+}

@@ -35,48 +35,16 @@ var Container = Backbone.View.extend({
 
 		this.views.auth = new application.constructors.auth({});
 
-		//var query = new Parse.Query(Parse.Role);
-		//query.equalTo('name', 'Test');
 
-		//query.contains("name", "Test");
+		//var query = new Parse.Query(Group);
+		//query.equalTo('name', 'Gropchik');
         //
-		//console.log(query.get("name"));
-
-
-		var query = new Parse.Query(Parse.Role);
-		query.equalTo('name', 'k');
-		query.find().then(function(roles){
-			console.log(roles);
-
-		});
-
-
-		//var queryRole = new Parse.Query(Parse.Role);
-		//queryRole.equalTo('name', 'Test');
-		//queryRole.first({
-		//	success: function(result) { // Role Object
-		//		var role = result;
-		//		var adminRelation = new Parse.Relation(role, 'users');
-		//		var queryAdmins = adminRelation.query();
-		//		queryAdmins.equalTo('objectId', Parse.User.current().id);
-		//		queryAdmins.first({
-		//			success: function(result) {    // User Object
-		//				var user = result;
-		//				user ? console.log('USER : ', user) : console.log('User not Administrator!');
-		//			}
-		//		});
-		//	},
-		//	error: function(error) {}
+		//query.find().then(function (groups) {
+		//		console.log(groups[0].toJSON().objectId);
+        //
 		//});
 
-//query.find().then(function(obj) {
-//	console.log(obj);
-//	console.log('the user with name test was found');
-//}, function(error) {
-//	alert("Error: " + error.code + " " + error.message);
-//});
 
-		//console.log((new Parse.Query(Parse.Role)).equalTo("name", "Test").find());
 
 		this.vent.on('loginSuccess', function () {
 			console.log('Vent caught Success');

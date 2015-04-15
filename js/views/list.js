@@ -24,21 +24,49 @@ var ProductList = Backbone.View.extend({
 
 		this.$el.html(html);
 
+		console.log('List render');
 		return this;
 	},
 
 	toggleDone: function(e) {
-		var idx, modelToToggle;
+		var idx, query, modelToToggle;
+
+		//modelId = $(e.currentTarget).closest('li').find('span').text();
+		//console.log(modelId);
+        //
+		//query = new Parse.Query(Item);
+		//query.equalTo('objectId', modelId);
+        //
+		//query.find().then(function (models) {
+		//	console.log(models[0]);
+		//	modelToToggle = models[0];
+		//	modelToToggle.toggle();
+		//});
 
 		idx = $(e.currentTarget).closest('li').index();
 		modelToToggle = this.model.at(idx);
+
+		console.log(idx);
+		console.log(modelToToggle);
 
 		modelToToggle.toggle();
 	},
 
 
 	clear: function(e) {
-		var idx, modelToDestroy;
+		var idx, query, modelToDestroy;
+
+		//modelId = $(e.currentTarget).closest('li').find('span').text();
+		//console.log(this.model);
+        //
+		//query = new Parse.Query(Item);
+		//query.equalTo('objectId', modelId);
+        //
+		//query.find().then(function (models) {
+		//	console.log(models[0]);
+		//	modelToDestroy = models[0];
+		//	modelToDestroy.destroy();
+		//});
 
 		idx = $(e.currentTarget).closest('li').index();
 		modelToDestroy = this.model.at(idx);

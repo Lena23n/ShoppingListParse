@@ -63,6 +63,7 @@
 <script type="text/template" id="one-item-template">
 		<% _.each(model, function(item) { %>
 		<li>
+			<span class="obj-id"><%= item.objectId %></span>
 			<label <%= item.done ? 'class="done"' : '' %>>
 			<!--todo use class done here-->
 			<input class="toggle" type="checkbox" <%= item.done ? 'checked="checked"' : '' %> />
@@ -82,6 +83,7 @@
 <script src="http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.0/backbone-min.js"></script>
 <!--<script src="js/libs/backbone.localStorage.js"></script>-->
 <script src="js/model/model.js"></script>
+<script src="js/model/group.js"></script>
 <script src="js/collection/items.js"></script>
 <script src="js/views/list.js"></script>
 <script src="js/views/form.js"></script>

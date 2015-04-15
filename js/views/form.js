@@ -16,49 +16,60 @@ var FormView = Backbone.View.extend({
 	view: null,
 
 	initialize: function() {
-
 		this.inputs.name = $("#new-item");
 		this.inputs.quantity = $("#count");
 	},
 
 	createOnClickAddButton: function() {
-		var name = this.inputs.name.val(),
+		var self = this,
+			name = this.inputs.name.val(),
 			quantity = this.inputs.quantity.val(),
-			item = {
-				title: name,
-				quantity: quantity
-			};
+			currentUser = Parse.User.current(),
+			userGroup = currentUser.toJSON().group,
+			newACL,
+			groupId,
+			item;
 
+		console.log('Name', name);
+		console.log('quantity', quantity);
 
 		if (!name || !quantity) {
 			alert('You should fill in all the fields');
 			return;
 		}
 
-		//var postACL = new Parse.ACL();
-		//postACL.setRoleWriteAccess("Moderators", true);
-		//wallPost.setACL(postACL);
-		//wallPost.save();
+		console.log(userGroup);
+		newACL = new Parse.ACL();
 
-		var data = _.extend({
-			user:    Parse.User.current(),
-			ACL:     new Parse.ACL(/*Parse.User.current()*/'k')
-		}, item);
+		newACL.setPublicReadAccess(true);
+		newACL.setPublicWriteAccess(true);
 
-		this.model.create(data, {
-			validate: true,
-			error : function (model, error){
-				self.showError(error)
-			}
+
+		var query = new Parse.Query(Group);
+		query.equalTo('objectId', userGroup);
+
+		query.find().then(function (groups) {
+			groupId = groups[0].toJSON().objectId;
+
+
+			item = {
+				title: name,
+				quantity: quantity,
+				group: groupId
+			};
+
+			var data = _.extend({
+				ACL: newACL
+			}, item);
+
+
+			self.model.create(data, {
+				validate: true,
+				error : function (model, error){
+					self.showError(error)
+				}
+			});
 		});
-
-		//this.model.create({
-		//	title: name,
-		//	quantity: quantity
-		//});
-        //
-		//this.model.setACL(new Parse.ACL(Parse.User.current()));
-		//this.model.save();
 
 		this.inputs.name.val('');
 		this.inputs.quantity.val('');
