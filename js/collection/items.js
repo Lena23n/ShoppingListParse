@@ -3,22 +3,21 @@ var ItemList = Parse.Collection.extend({
 	model: Item,
 	query : new Parse.Query(Item),
 	initialize : function () {
+		var self = this;
+		this.vent = vent;
+		this.vent.on('showList', function () {
+			self.fetchItem();
+		})
+	},
+	fetchItem : function () {
 		var userGroup = Parse.User.current().toJSON().group;
-        //
-		//var query = new Parse.Query(Parse.User);
-		//query.equalTo('name', Parse.User.current());
-        //
-		//query.find().then(function (user) {
-		//
-		//});
-		//
 
-
-		//this.query.equalTo('ACL', 'test');
-		//console.log(Parse.User.current());
-		//this.query.equalTo('user', Parse.User.current());
-		this.query.equalTo('group', userGroup);
-		console.log(userGroup);
-		this.fetch();
+		if(userGroup != undefined) {
+			console.log('fetch');
+			this.query.equalTo('group', userGroup);
+			console.log(userGroup);
+			this.fetch();
+			console.log(this);
+		}
 	}
 });

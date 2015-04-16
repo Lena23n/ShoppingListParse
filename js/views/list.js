@@ -1,5 +1,6 @@
 var ProductList = Backbone.View.extend({
-	el: '#item-list',
+	tagName: 'ol',
+	id: 'item-list',
 	template: _.template($('#one-item-template').html()),
 	events: {
 		"click .toggle": "toggleDone",
@@ -29,19 +30,7 @@ var ProductList = Backbone.View.extend({
 	},
 
 	toggleDone: function(e) {
-		var idx, query, modelToToggle;
-
-		//modelId = $(e.currentTarget).closest('li').find('span').text();
-		//console.log(modelId);
-        //
-		//query = new Parse.Query(Item);
-		//query.equalTo('objectId', modelId);
-        //
-		//query.find().then(function (models) {
-		//	console.log(models[0]);
-		//	modelToToggle = models[0];
-		//	modelToToggle.toggle();
-		//});
+		var idx, modelToToggle;
 
 		idx = $(e.currentTarget).closest('li').index();
 		modelToToggle = this.model.at(idx);
@@ -54,19 +43,7 @@ var ProductList = Backbone.View.extend({
 
 
 	clear: function(e) {
-		var idx, query, modelToDestroy;
-
-		//modelId = $(e.currentTarget).closest('li').find('span').text();
-		//console.log(this.model);
-        //
-		//query = new Parse.Query(Item);
-		//query.equalTo('objectId', modelId);
-        //
-		//query.find().then(function (models) {
-		//	console.log(models[0]);
-		//	modelToDestroy = models[0];
-		//	modelToDestroy.destroy();
-		//});
+		var idx, modelToDestroy;
 
 		idx = $(e.currentTarget).closest('li').index();
 		modelToDestroy = this.model.at(idx);

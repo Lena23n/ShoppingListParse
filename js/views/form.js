@@ -1,6 +1,6 @@
 var FormView = Backbone.View.extend({
-	el: $("#app"),
-
+	id: ("app"),
+	template: _.template($('#form-view').html()),
 	events: {
 		"click #add":  "createOnClickAddButton",
 		"click #logout": "logout"
@@ -16,11 +16,23 @@ var FormView = Backbone.View.extend({
 	view: null,
 
 	initialize: function() {
-		this.inputs.name = $("#new-item");
-		this.inputs.quantity = $("#count");
+		this.vent = vent;
+	},
+
+	render : function () {
+		if (!this.template) {
+			return false;
+		}
+		var html = this.template();
+
+		this.$el.html(html);
+		return this;
 	},
 
 	createOnClickAddButton: function() {
+		this.inputs.name = $("#new-item");
+		this.inputs.quantity = $("#count");
+
 		var self = this,
 			name = this.inputs.name.val(),
 			quantity = this.inputs.quantity.val(),
@@ -29,9 +41,6 @@ var FormView = Backbone.View.extend({
 			newACL,
 			groupId,
 			item;
-
-		console.log('Name', name);
-		console.log('quantity', quantity);
 
 		if (!name || !quantity) {
 			alert('You should fill in all the fields');
@@ -51,7 +60,6 @@ var FormView = Backbone.View.extend({
 		query.find().then(function (groups) {
 			groupId = groups[0].toJSON().objectId;
 
-
 			item = {
 				title: name,
 				quantity: quantity,
@@ -69,10 +77,10 @@ var FormView = Backbone.View.extend({
 					self.showError(error)
 				}
 			});
+			// todo async shit
+			self.inputs.name.val('');
+			self.inputs.quantity.val('');
 		});
-
-		this.inputs.name.val('');
-		this.inputs.quantity.val('');
 	},
 
 
@@ -81,11 +89,6 @@ var FormView = Backbone.View.extend({
 		this.showAuthView();
 	},
 	showAuthView : function () {
-		$('#auth-view').css('display', 'block');
-		this.clearList();
-		$('#app').css("display","none");
-	},
-	clearList : function () {
-		$('#item-list').html('');
+		this.vent.trigger('showAuthView');
 	}
 });

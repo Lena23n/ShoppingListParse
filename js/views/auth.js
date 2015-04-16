@@ -1,5 +1,6 @@
 var AuthView = Backbone.View.extend({
-    el: $("#auth-view"),
+    id : ('auth-wrap'),
+    template: _.template($('#auth-view').html()),
     events: {
         "click #auth": "login",
         "click #signUp": "signUp"
@@ -8,6 +9,17 @@ var AuthView = Backbone.View.extend({
         this.vent = vent;
         console.log('Auth is ready');
 
+    },
+    render : function () {
+        if (!this.template) {
+            return false;
+        }
+        var html = this.template();
+
+        this.$el.html(html);
+
+        console.log(this);
+        return this;
     },
     login: function () {
 
@@ -44,9 +56,10 @@ var AuthView = Backbone.View.extend({
                 var query = new Parse.Query(Group);
                 query.equalTo('name', roleName);
 
+                //todo simplify promises
                 query.find().then(function (groups) {
                     if (groups.length > 0) {
-                        var currentGroupId = groups[0].toJSON().objectId;
+                        var currentGroupId = groups[0].toJSON().objectId ;
                         console.log(currentGroupId,'add to group');
                         user.set("group", currentGroupId);
                         user.save();
@@ -54,10 +67,14 @@ var AuthView = Backbone.View.extend({
                         var groupList = new Group({name: roleName});
                         groupList.save();
 
+                        console.log(groupList.toJSON().name);
+
                         var query = new Parse.Query(Group);
                         query.equalTo('name', groupList.toJSON().name);
 
                         query.find().then(function (group) {
+                            console.log(group[0]);
+
                             var newGroupId = group[0].toJSON().objectId;
 
                             user.set("group", newGroupId);
@@ -66,64 +83,13 @@ var AuthView = Backbone.View.extend({
                         });
 
                     }
+                    self.authSuccess();
                 });
-
-                //var query = new Parse.Query(Parse.Role);
-                //query.equalTo('name', roleName);
-                //
-                //query.find().then(function(roles) {
-                //    if (roles.length > 0) {
-                //        currentRole = roles[0];
-                //        currentRole.getUsers().add(Parse.User.current());
-                //        currentRole.save();
-                //        console.log('User was added to the role');
-                //    } else {
-                //        roleACL.setPublicReadAccess(true);
-                //        roleACL.setPublicWriteAccess(true);
-                //
-                //        var role = new Parse.Role(roleName, roleACL);
-                //        console.log(role);
-                //        role.getUsers().add(Parse.User.current());
-                //
-                //        console.log(role.getUsers().add(Parse.User.current()));
-                //        role.save();
-                //
-                //        console.log('New role was added');
-                //    }
-                //});
-
-                self.authSuccess();
             },
             error: function (user, error) {
                 self.showError(error.code + " " + error.message);
             }
         });
-
-        //var query = new Parse.Query(Parse.Role);
-        //query.equalTo('name', roleName);
-        //
-        //query.find().then(function(roles) {
-        //    if (roles.length > 0) {
-        //        currentRole = roles[0];
-        //        currentRole.getUsers().add(Parse.User.current());
-        //        currentRole.save();
-        //        console.log('User was added to the role');
-        //    } else {
-        //        roleACL.setPublicReadAccess(true);
-        //        roleACL.setPublicWriteAccess(true);
-        //
-        //        var role = new Parse.Role(roleName, roleACL);
-        //        console.log(role);
-        //        role.getUsers().add(Parse.User.current());
-        //
-        //        console.log(role.getUsers().add(Parse.User.current()));
-        //        role.save();
-        //
-        //        console.log('New role was added');
-        //    }
-        //});
-
-
     },
     showError: function (error) {
         alert(error);
@@ -133,3 +99,13 @@ var AuthView = Backbone.View.extend({
         this.vent.trigger('loginSuccess');
     }
 });
+// todo promise practice
+/*setTimeout(function () {
+    console.log(1);
+    setTimeout(function () {
+        console.log(2);
+        setTimeout(function () {
+            console.log(3);
+        }, 100);
+    }, 100);
+}, 100);*/

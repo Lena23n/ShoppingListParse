@@ -18,11 +18,9 @@ Parse.initialize("YZp2Tqvez72boawZIl1Q6imzyfJvytJuvtmzrvz7", "UvDJCduCQ8b5NSpnBI
 var vent = _.extend({}, Backbone.Events);
 
 var Container = Backbone.View.extend({
-	//list : null,
-	//form : null,
-	//model : null,
-	//collection: null,
-	vent: null,
+	el : ('#application'),
+	vent : null,
+	collection: null,
 	views : {
 		addForm : null,
 		list : null,
@@ -33,32 +31,46 @@ var Container = Backbone.View.extend({
 		var self = this;
 		this.vent = vent;
 
-		this.views.auth = new application.constructors.auth({});
-
-
-		//var query = new Parse.Query(Group);
-		//query.equalTo('name', 'Gropchik');
-        //
-		//query.find().then(function (groups) {
-		//		console.log(groups[0].toJSON().objectId);
-        //
-		//});
-
-
+		self.showAuth();
 
 		this.vent.on('loginSuccess', function () {
-			console.log('Vent caught Success');
 			self.showList();
 		});
 
+		this.vent.on('showAuthView', function () {
+			self.showAuth();
+		});
+	},
+	showAuth : function () {
+		this.clearContainer();
+		var authContainer = this.$el.find('#authContainer');
+
+		this.views.auth = new application.constructors.auth({});
+
+		authContainer.html(this.views.auth.render().el);
 	},
 	showList : function () {
-		this.collection = new application.constructors.list();
-		this.list = new application.constructors.productView({model: this.collection});
-		this.form = new application.constructors.form({model: this.collection});
+		this.clearContainer();
+		var formContainer = this.$el.find('#formContainer'),
+			listContainer;
 
-		$('#auth-view').css("display","none");
-		$('#app').css("display","block");
+		this.collection = new application.constructors.list();
+		this.views.addForm = new application.constructors.form({model: this.collection});
+		this.views.list = new application.constructors.productView({model: this.collection});
+
+		formContainer.append(this.views.addForm.render().el);
+
+		listContainer = this.$el.find('#item-list-block');
+
+		listContainer.append(this.views.list.render().el);
+		this.vent.trigger('showList');
+	},
+	clearContainer : function () {
+		var authContainer = this.$el.find('#authContainer');
+		var formContainer = this.$el.find('#formContainer');
+
+		authContainer.empty();
+		formContainer.empty();
 	}
 });
 
