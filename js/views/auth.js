@@ -1,5 +1,5 @@
 var AuthView = Backbone.View.extend({
-    id : ('auth-wrap'),
+    id: ('auth-wrap'),
     template: _.template($('#auth-view').html()),
     events: {
         "click #auth": "login",
@@ -10,15 +10,13 @@ var AuthView = Backbone.View.extend({
         console.log('Auth is ready');
 
     },
-    render : function () {
+    render: function () {
         if (!this.template) {
             return false;
         }
         var html = this.template();
 
         this.$el.html(html);
-
-        console.log(this);
         return this;
     },
     login: function () {
@@ -41,9 +39,9 @@ var AuthView = Backbone.View.extend({
             user = new Parse.User(),
             login = this.$el.find('#newLogin').val(),
             pass = this.$el.find('#newPassword').val(),
-            roleName = this.$el.find('#role').val();
+            groupName = this.$el.find('#role').val();
 
-        if (!login.length || !pass.length || !roleName.length) {
+        if (!login.length || !pass.length || !groupName.length) {
             this.showError('verify your credentials, please');
             return false;
         }
@@ -54,35 +52,78 @@ var AuthView = Backbone.View.extend({
         user.signUp(null, {
             success: function (user) {
                 var query = new Parse.Query(Group);
-                query.equalTo('name', roleName);
+                query.equalTo('name', groupName);
 
                 //todo simplify promises
-                query.find().then(function (groups) {
+                query.find()
+                    .then(function (groups) {
+
                     if (groups.length > 0) {
-                        var currentGroupId = groups[0].toJSON().objectId ;
-                        console.log(currentGroupId,'add to group');
-                        user.set("group", currentGroupId);
-                        user.save();
+                        var currentGroup = groups[0]/*.toJSON().objectId*/;
+
+                        console.log(currentGroup, 'add to group');
+                        user.set("group", currentGroup);
+                        return user.save();
+                            /*.then(function () {
+                            self.authSuccess();
+                        });*/
                     } else {
-                        var groupList = new Group({name: roleName});
-                        groupList.save();
+                        //var groupList = new Group({name: roleName});
+                        //groupList.save();
+                        //
+                        //console.log(groupList.toJSON().name);
+                        //
+                        //var query = new Parse.Query(Group);
+                        //query.equalTo('name', groupList.toJSON().name);
+                        //
+                        //query.find().then(function (group) {
+                        //    console.log(group[0]);
+                        //
+                        //    var newGroupId = group[0].toJSON().objectId;
+                        //
+                        //    user.set("group", newGroupId);
+                        //    user.save();
+                        //    console.log(newGroupId,'Create new group');
+                        //});
 
-                        console.log(groupList.toJSON().name);
+                        var groupList = new Group({name: groupName});
+                        groupList.save()
+                            .then(function (group) {
+                            //console.log(group.toJSON().name);
+                            //
+                            //var name = group.toJSON().name;
+                            //return name;
+                            console.log(group);
+                            user.set('group', group);
+                            return user.save();
+                        });/*.then(function () {
+                            self.authSuccess();
+                        })*/
 
-                        var query = new Parse.Query(Group);
-                        query.equalTo('name', groupList.toJSON().name);
 
-                        query.find().then(function (group) {
+
+                        /*.then(function (name) {
+                            var query = new Parse.Query(Group);
+                            query.equalTo('name', name);
+                            return query.find();
+                        })*//*.then(function (group) {
                             console.log(group[0]);
+                            //var newGroupId = group[0].toJSON().objectId;
+                            var newGroupId = group[0].id;
+                            var query = new Parse.Query(Parse.User.current());
+                            query.include(newGroupId);
+                            //user.set('parent', newGroupId);
 
-                            var newGroupId = group[0].toJSON().objectId;
+                            //user.set("group", newGroupId);
 
-                            user.set("group", newGroupId);
+                            //var relation = user.relation("group");
+                            //relation.add(newGroupId);
                             user.save();
-                            console.log(newGroupId,'Create new group');
-                        });
-
+                            console.log(newGroupId, 'Create new group');
+                        })*/
                     }
+
+                }).then(function () {
                     self.authSuccess();
                 });
             },
@@ -101,11 +142,11 @@ var AuthView = Backbone.View.extend({
 });
 // todo promise practice
 /*setTimeout(function () {
-    console.log(1);
-    setTimeout(function () {
-        console.log(2);
-        setTimeout(function () {
-            console.log(3);
-        }, 100);
-    }, 100);
-}, 100);*/
+ console.log(1);
+ setTimeout(function () {
+ console.log(2);
+ setTimeout(function () {
+ console.log(3);
+ }, 100);
+ }, 100);
+ }, 100);*/
