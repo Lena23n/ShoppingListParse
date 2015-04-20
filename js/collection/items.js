@@ -11,16 +11,25 @@ var ItemList = Parse.Collection.extend({
 	},
 	fetchItem : function () {
 		var currentUser = Parse.User.current(),
-			self = this;
+			self = this,
+			result;
+
+		/*var result = currentUser.get('group');
+			self.query.equalTo('group', result);
+			self.fetch();*/
+
 
 		currentUser.fetch().then(function(fetchedUser){
+			console.log(fetchedUser);
 			return fetchedUser
 		}).then(function (fetchedUser) {
-			return fetchedUser.get('group');
-		}).then(function (group) {
-			self.query.equalTo('group', group);
+			result = fetchedUser.get('group');
+			self.query.equalTo('group', result);
 			self.fetch();
-		});
+		})/*.then(function (group) {
+		//	self.query.equalTo('group', group);
+		//	self.fetch();
+		//})*/;
 
 		//var group = new Parse.Query(Group),
 		//	query = group.equalTo('name','Test');

@@ -49,8 +49,8 @@ var FormView = Backbone.View.extend({
         currentUser.fetch().then(function(fetchedUser){
             return fetchedUser
         }).then(function (fetchedUser) {
-            return fetchedUser.get('group');
-        }).then(function (group) {
+            group = fetchedUser.get('group');
+
             console.log(group);
             newACL = new Parse.ACL();
 
@@ -74,6 +74,9 @@ var FormView = Backbone.View.extend({
                     self.showError(error)
                 }
             });
+
+
+
         }).then(function (done) {
             console.log('clear input');
             self.inputs.name.val('');
